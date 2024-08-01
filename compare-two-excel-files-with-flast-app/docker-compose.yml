@@ -1,0 +1,17 @@
+# docker-compose.yml
+version: '3.4'
+services:
+  flask-app:
+    image: compare-excel-files:latest
+    restart: always
+    build:
+      context: .
+      dockerfile: compare-excel-files.dockerfile
+    #command: tail -f /dev/null
+    #command: uwsgi --ini /app/app.ini
+    #command: python zyliq_rest_app.py
+    command: gunicorn --log-level debug --workers=2 --threads=2 -b 0.0.0.0:5000 --worker-class="gthread" --timeout 600 main:app
+    ports:
+      - 5000:5000
+    volumes:
+      - ./:/app
